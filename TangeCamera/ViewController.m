@@ -117,7 +117,9 @@
    // NSArray *main = [result valueForKeyPath:@"weather.main"];
    // NSString *weather = main[0];
    // NSLog(@"%@",weather);
+
 }
+
 
 // 位置情報更新時
 - (void)locationManager:(CLLocationManager *)manager
@@ -315,27 +317,27 @@
     
     //お天気を取得
     //OpenWeatherMapのAPI_KEYを作成
-    static NSString *API_KEY=@"YOUR_API_KEY_HERE";
+    static NSString *API_KEY=@"025ede102232126ca5139975832cae92";
     JFWeatherManager *weatherManager = [[JFWeatherManager alloc]init];
     
     
-//    [weatherManager fetchWeatherDataForLatitude:toAdd.coordinate.latitude andLongitude:toAdd.coordinate.longitude withAPIKeyOrNil:API_KEY :^(JFWeatherData *returnedWeatherData){
-//        
-//        NSLog(@"Latitude %.3f",[returnedWeatherData latitudeCoordinateOfRequest]);
-//        NSLog(@"Longitude %.3f",[returnedWeatherData longitudeCoordinateOfRequest]);
-//        NSLog(@"Conditions are %@",[returnedWeatherData currentConditionsTextualDescription]);
-//        NSLog(@"Temperature is %f",[returnedWeatherData temperatureInUnitFormat:kTemperatureCelcius]);
-//        NSLog(@"Sunrise is %@",[returnedWeatherData sunriseTime]);
-//        NSLog(@"Sunset is %@",[returnedWeatherData sunsetTime]);
-//        NSLog(@"Hours of Day Light are %@",[returnedWeatherData dayLightHours]);
-//        NSLog(@"Humidity is %@",[returnedWeatherData humidityPercentage]);
-//        NSLog(@"Pressure is %0.1f",[returnedWeatherData pressureInUnitFormat:kPressureHectopascal]);
-//        NSLog(@"Wind Speed is %0.1f",[returnedWeatherData windSpeedInUnitFormat:kWindSpeedMPH]);
-//        NSLog(@"Wind Direction is %@",[returnedWeatherData windDirectionInGeographicalDirection]);
-//        NSLog(@"Cloud Coverage %@",[returnedWeatherData cloudCovergePercentage]);
-//        NSLog(@"Rainfall Over Next 3h is %0.1fmm",[returnedWeatherData rainFallVolumeOver3HoursInMillimeters]);
-//        NSLog(@"SnowFall Over Next 3h is %0.1fmm",[returnedWeatherData snowFallVolumeOver3HoursInMillimeters]);
-//    }];
+    [weatherManager fetchWeatherDataForLatitude:toAdd.coordinate.latitude andLongitude:toAdd.coordinate.longitude withAPIKeyOrNil:API_KEY :^(JFWeatherData *returnedWeatherData){
+        
+        NSLog(@"Latitude %.3f",[returnedWeatherData latitudeCoordinateOfRequest]);
+        NSLog(@"Longitude %.3f",[returnedWeatherData longitudeCoordinateOfRequest]);
+        NSLog(@"Conditions are %@",[returnedWeatherData currentConditionsTextualDescription]);
+        NSLog(@"Temperature is %f",[returnedWeatherData temperatureInUnitFormat:kTemperatureCelcius]);
+        NSLog(@"Sunrise is %@",[returnedWeatherData sunriseTime]);
+        NSLog(@"Sunset is %@",[returnedWeatherData sunsetTime]);
+        NSLog(@"Hours of Day Light are %@",[returnedWeatherData dayLightHours]);
+        NSLog(@"Humidity is %@",[returnedWeatherData humidityPercentage]);
+        NSLog(@"Pressure is %0.1f",[returnedWeatherData pressureInUnitFormat:kPressureHectopascal]);
+        NSLog(@"Wind Speed is %0.1f",[returnedWeatherData windSpeedInUnitFormat:kWindSpeedMPH]);
+        NSLog(@"Wind Direction is %@",[returnedWeatherData windDirectionInGeographicalDirection]);
+        NSLog(@"Cloud Coverage %@",[returnedWeatherData cloudCovergePercentage]);
+        NSLog(@"Rainfall Over Next 3h is %0.1fmm",[returnedWeatherData rainFallVolumeOver3HoursInMillimeters]);
+        NSLog(@"SnowFall Over Next 3h is %0.1fmm",[returnedWeatherData snowFallVolumeOver3HoursInMillimeters]);
+    }];
     
     
     //UIImageを生成(image)
@@ -345,10 +347,10 @@
     UIImage *dst = [self addText:dateStr withFontName:@"Helvetica" fontSize:32 forImage:image locetionIndex:0];
     
     //tempにお天気を入れる(未)
-    NSString *temp = @"aaaa";
+    NSString *weatherstr = [NSString stringWithFormat:[returnedWeatherData temperatureInUnitFormat:kTemperatureCelcius];
     
     //お天気を書き込んだUIImageを生成
-    UIImage *tempurature = [self addText:temp withFontName:@"Helvetica" fontSize:40 forImage:dst locetionIndex:1];
+    UIImage *tempurature = [self addText:weatherstr withFontName:@"Helvetica" fontSize:40 forImage:dst locetionIndex:1];
     
     //imageViewにimageをはめる
     imageView.image = tempurature;
