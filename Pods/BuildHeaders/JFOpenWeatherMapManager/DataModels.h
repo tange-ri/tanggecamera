@@ -1,0 +1,1 @@
+../../JFOpenWeatherMapManager/DataModels.h

@@ -1,0 +1,1 @@
+../../JFOpenWeatherMapManager/Rain.h

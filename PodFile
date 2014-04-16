@@ -1,0 +1,4 @@
+platform :ios,'6.0'
+pod 'JFOpenWeatherMapManager'
+pod 'GPUImage'
+pod 'SBJson','~> 4.0.0'

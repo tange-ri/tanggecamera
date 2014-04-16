@@ -1,0 +1,40 @@
+PODS:
+  - AFNetworking (2.2.2):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+    - AFNetworking/UIKit
+  - AFNetworking/NSURLConnection (2.2.2):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.2.2):
+    - AFNetworking/NSURLConnection
+  - AFNetworking/Reachability (2.2.2)
+  - AFNetworking/Security (2.2.2)
+  - AFNetworking/Serialization (2.2.2)
+  - AFNetworking/UIKit (2.2.2):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - APTimeZones (1.1)
+  - GPUImage (0.1.4)
+  - JFOpenWeatherMapManager (1.0.0):
+    - AFNetworking
+    - APTimeZones
+  - SBJson (4.0.0)
+
+DEPENDENCIES:
+  - GPUImage
+  - JFOpenWeatherMapManager
+  - SBJson (~> 4.0.0)
+
+SPEC CHECKSUMS:
+  AFNetworking: dd8c1868e57451e3d17ebd3516f2a8c16f9646fe
+  APTimeZones: f1addf26d38e00682270be96c6c6e4c92bfadee9
+  GPUImage: f9b32e12350792a630e596ffc7b050bea3662670
+  JFOpenWeatherMapManager: ea6d9e288b146e3b7bde83dbf01fa56ba5fabe0b
+  SBJson: f3c686806e8e36ab89e020189ac582ba26ec4220
+
+COCOAPODS: 0.31.1

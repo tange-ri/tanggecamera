@@ -1,0 +1,1 @@
+../../JFOpenWeatherMapManager/Coord.h

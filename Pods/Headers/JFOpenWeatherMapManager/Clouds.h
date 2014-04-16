@@ -1,0 +1,1 @@
+../../JFOpenWeatherMapManager/Clouds.h
