@@ -41,7 +41,7 @@
     //Open Weather MapのAPIを使う
     
     // OpenWeatherMap APIのリクエストURLをセット
-    NSString *url = @"api.openweathermap.org/data/2.5/weather?lat=35&lon=139";
+    NSString *url = @"http://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139";
     
     // リクエストURLをUTF8でエンコード
     NSString *urlEscapeStr = [[NSString  stringWithString:url] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
@@ -58,7 +58,31 @@
         NSLog(@"DATA: %@", returnData);
     }
     
-    //A sample to use SBJsonParser
+    // real code to do what you want
+    SBJson4ValueBlock callbackBlock = ^(id v, BOOL *stop) {
+        //weather.mainの値を抽出してラベルに表示
+        
+        NSLog(@"returned Value: %@",v);
+        
+        NSDictionary *city = [(NSDictionary *)v valueForKey:@"city"];
+        NSLog(@"city:%@",city);
+    
+        
+  //      NSArray *main = [(NSDictionary *)v valueForKeyPath:@"weather.main"];
+  //      NSString *weather = main[0];
+  //      NSLog(@"%@",weather);
+    };   //define a block to handle the parsed data
+    
+    SBJson4ErrorBlock errorBlock = ^(NSError* err) {
+        NSLog(@"OOPS: %@", err);
+    }; //define a block to handle the error
+    
+    // parse the above data to verify.
+    SBJson4Parser *parser = [SBJson4Parser parserWithBlock:callbackBlock allowMultiRoot:FALSE unwrapRootArray:FALSE errorHandler:errorBlock];
+    [parser parse:returnData];  // parse NSData type.
+  
+    /*
+    //A Full sample to use SBJsonParser
     SBJson4ValueBlock block = ^(id v, BOOL *stop) {
         BOOL isArray = [v isKindOfClass:[NSArray class]];
         NSLog(@"Found: %@", isArray ? @"Array" : @"Object");
@@ -84,11 +108,10 @@
     NSLog(@"json string: %@",strFromArray);
     
     // parse the above data to verify.
-    SBJson4Parser *parser = [SBJson4Parser parserWithBlock:block allowMultiRoot:FALSE unwrapRootArray:FALSE errorHandler:eh];
+    SBJson4Parser *samplerParser = [SBJson4Parser parserWithBlock:block allowMultiRoot:FALSE unwrapRootArray:FALSE errorHandler:eh];
     
-    [parser parse:dataFromArray];  // parse NSData type.
-    
-    // To really run your app, You just need to run [parser parse:returnData]; It should work. make sure the returned string is a proper JSON string.
+    [samplerParser parse:dataFromArray];  // parse NSData type.
+    */
     
     //weather.mainの値を抽出してラベルに表示
    // NSArray *main = [result valueForKeyPath:@"weather.main"];
