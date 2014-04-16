@@ -48,41 +48,52 @@
     // 通信するためにNSMutableURLRequest型のrequestを作成
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:urlEscapeStr] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:15];
     // 通信
-    NSURLResponse * response = nil;
-    [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:nil];
+    // Check whether the data is returned. If failed, print out the err
+    NSURLResponse *response = nil;
+    NSError *err = nil;
+    NSData *returnData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&err];
+    if (returnData == nil) {
+        NSLog(@"ERROR: %@", err);
+    } else {
+        NSLog(@"DATA: %@", returnData);
+    }
     
+    //A sample to use SBJsonParser
     SBJson4ValueBlock block = ^(id v, BOOL *stop) {
         BOOL isArray = [v isKindOfClass:[NSArray class]];
         NSLog(@"Found: %@", isArray ? @"Array" : @"Object");
-    };
+    };   //define a block to handle the parsed data
     
     SBJson4ErrorBlock eh = ^(NSError* err) {
         NSLog(@"OOPS: %@", err);
-    };
-    
-    id parser = [SBJson4Parser multiRootParserWithBlock:block
-                                           errorHandler:eh];
+    }; //define a block to handle the error
     
     
-  //  [parser parse:responseData];
+    NSDictionary *dict = @{
+                           @"name": @"elvis",
+                           @"age": @"20",
+                           @"interest": @"read"
+                           };
+    NSArray *array = @[dict,dict];
     
-/*
+    //build a json data from the object
+    SBJson4Writer *writer = [[SBJson4Writer alloc] init];
+    writer.humanReadable = TRUE;
+    NSString *strFromArray = [writer stringWithObject:array];
+    NSData *dataFromArray = [writer dataWithObject:array];
+    NSLog(@"json string: %@",strFromArray);
     
-    // SBJsonを初期化
-    SBJson4Parser*parser = [SBJson4Parser parserWithBlock:^(id item, BOOL *stop) {
-        NSLog(@"%@",item);
-    } allowMultiRoot:TRUE unwrapRootArray:TRUE errorHandler:nil];
+    // parse the above data to verify.
+    SBJson4Parser *parser = [SBJson4Parser parserWithBlock:block allowMultiRoot:FALSE unwrapRootArray:FALSE errorHandler:eh];
     
-    // JSON形式で来たデータをNSDictionary型に格納
-    SBJson4ParserStatus result = [parser parse:responseData];
-    NSLog(@"result: %d",result);
-//    
-//    //weather.mainの値を抽出してラベルに表示
+    [parser parse:dataFromArray];  // parse NSData type.
+    
+    // To really run your app, You just need to run [parser parse:returnData]; It should work. make sure the returned string is a proper JSON string.
+    
+    //weather.mainの値を抽出してラベルに表示
    // NSArray *main = [result valueForKeyPath:@"weather.main"];
    // NSString *weather = main[0];
    // NSLog(@"%@",weather);
- */
-
 }
 
 // 位置情報更新時
