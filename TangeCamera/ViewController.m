@@ -12,28 +12,27 @@
 #import "DataModels.h"
 #import "SBJson4.h"
 
+#define API_KEY @"025ede102232126ca5139975832cae92"
+
 @interface ViewController ()
 
 @end
 
 @implementation ViewController
-@synthesize locationManager;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
     
     //画面の縦横比を変えずに表示
     [imageView setContentMode:UIViewContentModeScaleAspectFit];
     
-    locationManager = [[CLLocationManager alloc] init];
+    _locationManager = [[CLLocationManager alloc] init];
     
-    // 位置情報サービスが利用できるかどうかをチェック
+    // 位置情報サービスが利用できれば開始
     if ([CLLocationManager locationServicesEnabled]) {
-        locationManager.delegate = self; // ……【1】
-        // 測位開始
-        [locationManager startUpdatingLocation];
+        _locationManager.delegate = self;
+        [_locationManager startUpdatingLocation];
     } else {
         NSLog(@"Location services not available.");
     }
@@ -117,19 +116,12 @@
    // NSArray *main = [result valueForKeyPath:@"weather.main"];
    // NSString *weather = main[0];
    // NSLog(@"%@",weather);
-
 }
-
 
 // 位置情報更新時
 - (void)locationManager:(CLLocationManager *)manager
     didUpdateToLocation:(CLLocation *)newLocation
            fromLocation:(CLLocation *)oldLocation {
-    
-    //緯度・経度を出力
-    NSLog(@"didUpdateToLocation latitude=%f, longitude=%f",
-          [newLocation coordinate].latitude,
-          [newLocation coordinate].longitude);
 }
 
 // 測位失敗時や、5位置情報の利用をユーザーが「不許可」とした場合などに呼ばれる
@@ -317,11 +309,12 @@
     
     //お天気を取得
     //OpenWeatherMapのAPI_KEYを作成
-    static NSString *API_KEY=@"025ede102232126ca5139975832cae92";
     JFWeatherManager *weatherManager = [[JFWeatherManager alloc]init];
     
+    float latitude = _locationManager.location.coordinate.latitude;
+    float longitude = _locationManager.location.coordinate.longitude;
     
-    [weatherManager fetchWeatherDataForLatitude:toAdd.coordinate.latitude andLongitude:toAdd.coordinate.longitude withAPIKeyOrNil:API_KEY :^(JFWeatherData *returnedWeatherData){
+    [weatherManager fetchWeatherDataForLatitude:latitude andLongitude:longitude withAPIKeyOrNil:API_KEY :^(JFWeatherData *returnedWeatherData){
         
         NSLog(@"Latitude %.3f",[returnedWeatherData latitudeCoordinateOfRequest]);
         NSLog(@"Longitude %.3f",[returnedWeatherData longitudeCoordinateOfRequest]);
@@ -347,10 +340,10 @@
     UIImage *dst = [self addText:dateStr withFontName:@"Helvetica" fontSize:32 forImage:image locetionIndex:0];
     
     //tempにお天気を入れる(未)
-    NSString *weatherstr = [NSString stringWithFormat:[returnedWeatherData temperatureInUnitFormat:kTemperatureCelcius];
+    NSString *temp = @"aaaa";
     
     //お天気を書き込んだUIImageを生成
-    UIImage *tempurature = [self addText:weatherstr withFontName:@"Helvetica" fontSize:40 forImage:dst locetionIndex:1];
+    UIImage *tempurature = [self addText:temp withFontName:@"Helvetica" fontSize:40 forImage:dst locetionIndex:1];
     
     //imageViewにimageをはめる
     imageView.image = tempurature;

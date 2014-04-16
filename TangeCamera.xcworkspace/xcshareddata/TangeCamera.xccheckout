@@ -5,19 +5,19 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>699F9CCE-AEB5-4798-BD24-860AEECE62CA</string>
+	<string>B85EB0CE-AF64-4D58-BFCC-6647BC63167D</string>
 	<key>IDESourceControlProjectName</key>
 	<string>TangeCamera</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>6858538A-BC72-4B04-B107-39A7F0B93CF1</key>
+		<key>311FBD0A-CC7A-4989-84D2-AE0609FEDE3A</key>
 		<string>https://github.com/tange-ri/tanggecamera</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>TangeCamera.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>6858538A-BC72-4B04-B107-39A7F0B93CF1</key>
+		<key>311FBD0A-CC7A-4989-84D2-AE0609FEDE3A</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
@@ -25,16 +25,16 @@
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>6858538A-BC72-4B04-B107-39A7F0B93CF1</string>
+	<string>311FBD0A-CC7A-4989-84D2-AE0609FEDE3A</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>6858538A-BC72-4B04-B107-39A7F0B93CF1</string>
+			<string>311FBD0A-CC7A-4989-84D2-AE0609FEDE3A</string>
 			<key>IDESourceControlWCCName</key>
-			<string>TangeCamera</string>
+			<string>tanggecamera</string>
 		</dict>
 	</array>
 </dict>
