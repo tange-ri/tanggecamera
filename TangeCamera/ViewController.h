@@ -13,8 +13,24 @@
     
     //画像を表示するView
     IBOutlet UIImageView *imageView;
-    
     CLLocationManager *lm;
+    
+    //撮影した写真
+    UIImage *inputImage;
+    //現在日時を書き込んだUIImage
+    UIImage *dateImage;
+    //天気と現在日時を書き込んだUIImage
+    UIImage *weatherImage;
+    //気温を書き込んだUIImage
+    UIImage *temperatureImage;
+    
+    IBOutlet UILabel *label;
+    
+    //エフェクトの強度を変える
+    //IBOutlet UISlider *slider;
+    
+    //インジケーター
+    UIActivityIndicatorView * aiView;
     
 }
 
@@ -24,5 +40,8 @@
 -(IBAction)openLibrary;
 -(IBAction)effect;
 -(IBAction)save;
+-(IBAction)filterImage;
+-(IBAction)valueChanged;
+
 
 @end

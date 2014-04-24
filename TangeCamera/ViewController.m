@@ -11,6 +11,8 @@
 #import "JFWeatherManager.h"
 #import "DataModels.h"
 #import "SBJson4.h"
+#import "GPUImage.h"
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #define API_KEY @"025ede102232126ca5139975832cae92"
 
@@ -24,6 +26,7 @@
 {
     [super viewDidLoad];
     
+    
     //画面の縦横比を変えずに表示
     [imageView setContentMode:UIViewContentModeScaleAspectFit];
     
@@ -33,6 +36,9 @@
     if ([CLLocationManager locationServicesEnabled]) {
         _locationManager.delegate = self;
         [_locationManager startUpdatingLocation];
+        
+        NSLog(@"OK");
+        
     } else {
         NSLog(@"Location services not available.");
     }
@@ -116,6 +122,26 @@
    // NSArray *main = [result valueForKeyPath:@"weather.main"];
    // NSString *weather = main[0];
    // NSLog(@"%@",weather);
+    
+    //sliderの設定
+//    slider.maximumValue = 1.0f;//最大値
+//    slider.minimumValue = 0.0f;//最小値
+//    slider.value = 1.0f;//最初の値
+    
+    //// インジケーターインスタンスを作成する。
+    aiView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    
+    // 画面の中央に表示するようにframeを変更する
+    float w = aiView.frame.size.width;
+    float h = aiView.frame.size.height;
+    float x = self.view.frame.size.width/2 - w/2;
+    float y = self.view.frame.size.height/2 - h/2;
+    aiView.frame = CGRectMake(x, y, w, h);
+    
+    // 現在のサブビューとして登録する
+    [self.view addSubview:aiView];
+
+
 }
 
 // 位置情報更新時
@@ -188,23 +214,26 @@
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingImage:(UIImage *)image editingInfo:(NSDictionary *)editingInfo{
     
     
-    //UIImageViewに撮った画像を表示
-    imageView.image=image;
-    
     //ModalimageViewControllerのViewを閉じる
     [[picker presentingViewController] dismissViewControllerAnimated:YES completion:nil];
     
     //カメラモードの場合
-    if (picker.sourceType==UIImagePickerControllerSourceTypeCamera) {
-        
-        //画像をフォトアルバムに保存する
-        UIImageWriteToSavedPhotosAlbum(
-                                       image,//保存する画像
-                                       self,//呼び出されるメソッドを持っているクラス
-                                       @selector(targetImage:didFinishSavingWithError:contentInfo:)
-                                       //呼び出されるメソッド
-                                       ,NULL);//メソッドに渡すもの
-    }
+//    if (picker.sourceType==UIImagePickerControllerSourceTypeCamera) {
+//        
+//        //画像をフォトアルバムに保存する
+//        UIImageWriteToSavedPhotosAlbum(
+//                                       image,//保存する画像
+//                                       self,//呼び出されるメソッドを持っているクラス
+//                                       @selector(targetImage:didFinishSavingWithError:contentInfo:)
+//                                       //呼び出されるメソッド
+//                                       ,NULL);//メソッドに渡すもの
+//    }
+    
+    inputImage = image ;
+    
+    //imageViewにimageをはめる
+    imageView.image = image;
+    
 }
 
 //画像保存時に呼ばれるメソッド
@@ -253,66 +282,142 @@
     int w = image.size.width;
     int h = image.size.height;
     
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    //imageのサイズにあわせた新しいコンテクストを作る
+    UIGraphicsBeginImageContextWithOptions(image.size, NO, 0.0);
     
-    CGContextRef context = CGBitmapContextCreate(NULL, w, h, 8, 4 * w, colorSpace, kCGImageAlphaPremultipliedFirst);
-    
-    CGContextDrawImage(context, CGRectMake(0, 0, w, h), image.CGImage);
-    CGContextSetRGBFillColor(context, 0.0, 0.0, 1.0, 1);
-    
-    char* cText = (char *)[text cStringUsingEncoding:NSASCIIStringEncoding];
-    
-    CGContextSelectFont(context, [fontName cStringUsingEncoding:NSUTF8StringEncoding], fontSize, kCGEncodingMacRoman);
-    CGContextSetTextDrawingMode(context, kCGTextFill);
-    CGContextSetRGBFillColor(context, 0, 0, 0, 1);
-    
-    //rotate text
-    //CGContextSetTextMatrix(context, CGAffineTransformMakeRotation(-M_PI / 4));
-    
-    if (locationIndex == 0) {
+        CGPoint pt;
+    //縦と横で位置を変える
+    if (w>h) {
         
-    CGContextShowTextAtPoint(context, 4, 150, cText, strlen(cText));
-        
-        NSLog(@"aaa");
+    
+        if (locationIndex == 0) {
+            pt = CGPointMake(20, h - h/2);
+        }else if(locationIndex == 1){
+            pt = CGPointMake(30, h - h/6);
+        }else{
+            pt = CGPointMake(30, h - h/3);
+        }
         
     }else{
         
-       CGContextShowTextAtPoint(context, 4, 34, cText, strlen(cText));
+        if (locationIndex == 0) {
+            pt = CGPointMake(20, h - h/3);
+        }else if(locationIndex == 1){
+            pt = CGPointMake(30, h - h*2/9);
+        }else{
+            pt = CGPointMake(30, h - h/9);
+        }
         
-         NSLog(@"iii");
     }
     
+    //イメージを書き込む
+    [image drawAtPoint:CGPointMake(0.0, 0.0)];
+    //テキストを書き込む
+    [text drawAtPoint:pt
+            withAttributes:@{NSFontAttributeName:[UIFont fontWithName:fontName
+                                                                 size:fontSize],
+                             NSForegroundColorAttributeName: [UIColor orangeColor]}];
     
-    CGImageRef imageMasked = CGBitmapContextCreateImage(context);
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
     
-    CGContextRelease(context);
-    CGColorSpaceRelease(colorSpace);
+    return newImage;
     
-    return [UIImage imageWithCGImage:imageMasked];
+//    if (w > h) {
+//      
+//        w = image.size.height;
+//        h = image.size.width;
+//    }
+    
+//    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+//    
+//    CGContextRef context = CGBitmapContextCreate(NULL, w, h, 8, 4 * w, colorSpace, (CGBitmapInfo)kCGImageAlphaPremultipliedFirst);
+//    
+//    UIGraphicsPushContext(context);
+//    
+//    CGContextDrawImage(context, CGRectMake(0, 0, w, h), image.CGImage);
+//    
+////    char* cText = (char *)[text cStringUsingEncoding:NSASCIIStringEncoding];
+////    CGContextSelectFont(context, [fontName cStringUsingEncoding:NSUTF8StringEncoding], fontSize, kCGEncodingMacRoman);
+////
+////    CGContextSetTextDrawingMode(context, kCGTextFill);
+////    CGContextSetRGBFillColor(context, 255, 255, 255, 255);
+//    
+//
+//    
+//    //rotate text
+//    //CGContextSetTextMatrix(context, CGAffineTransformMakeRotation(-M_PI / 4));
+//    
+////    if (locationIndex == 0) {
+////        
+////    CGContextShowTextAtPoint(context, 20, h/4, cText, strlen(cText));
+////        
+////        NSLog(@"aaa");
+////        
+////    }else{
+////        
+////       CGContextShowTextAtPoint(context, 20, h/8, cText, strlen(cText));
+////        
+////         NSLog(@"iii");
+////    }
+//
+//    
+//
+//    
+//    CGPoint pt;
+//    if (locationIndex == 0) {
+//        pt = CGPointMake(20, h - h/4);
+//    }else{
+//        pt = CGPointMake(20, h - h/8);
+//    }
+//    
+//    CGContextSetTextDrawingMode(context, kCGTextFill); // This is the default
+//    
+//    CGContextTranslateCTM(context, 0.0, image.size.height);
+//    CGContextScaleCTM(context, 1.0, -1.0);
+//    
+//    [text drawAtPoint:pt
+//       withAttributes:@{NSFontAttributeName:[UIFont fontWithName:fontName
+//                                                            size:fontSize],
+//                        NSForegroundColorAttributeName: [UIColor whiteColor]}];
+//    
+//    UIGraphicsPopContext();
+//    
+//    CGImageRef imageMasked = CGBitmapContextCreateImage(context);
+//    UIImage *newImage = [UIImage imageWithCGImage:imageMasked];
+//
+//    CGContextRelease(context);
+//    CGColorSpaceRelease(colorSpace);
+//    
+//    return newImage;
 }
 
 
 
 
 -(IBAction)effect{
+
+    //インジケーター開始
+    [aiView startAnimating];
     
     //現在時刻を取得
     NSDate *date = [NSDate date];
     
     //NSDateをNSString型に変換
     NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
+    [formatter setDateFormat:@"yyyy/MM/dd"];
     NSString *dateStr = [formatter stringFromDate:date];
     
     NSLog(@"%@",dateStr);
     
     
     //お天気を取得
-    //OpenWeatherMapのAPI_KEYを作成
+    //OpenWeatherMapのAPI_KEYを生成→
     JFWeatherManager *weatherManager = [[JFWeatherManager alloc]init];
     
     float latitude = _locationManager.location.coordinate.latitude;
     float longitude = _locationManager.location.coordinate.longitude;
+    
     
     [weatherManager fetchWeatherDataForLatitude:latitude andLongitude:longitude withAPIKeyOrNil:API_KEY :^(JFWeatherData *returnedWeatherData){
         
@@ -330,24 +435,92 @@
         NSLog(@"Cloud Coverage %@",[returnedWeatherData cloudCovergePercentage]);
         NSLog(@"Rainfall Over Next 3h is %0.1fmm",[returnedWeatherData rainFallVolumeOver3HoursInMillimeters]);
         NSLog(@"SnowFall Over Next 3h is %0.1fmm",[returnedWeatherData snowFallVolumeOver3HoursInMillimeters]);
+        
+        //UIImageを生成(image)
+        //image =[UIImage imageNamed:@"ふなっしー.jpg"];
+        
+        //inputImageのサイズを取得
+        int w = inputImage.size.width;
+        int h = inputImage.size.height;
+        
+        //imageにdateStrを書き込んだUIImageを生成
+        dateImage = [self addText:dateStr withFontName:@"KFhimajiFACE" fontSize:w/10 forImage:inputImage locetionIndex:0];
+
+        //weatherstrにお天気の文字列を入れる
+        NSString *weatherstr =[returnedWeatherData currentConditionsTextualDescription];
+        //weatherstrにお天気の文字列を入れる
+        NSString *temperaturestr = [NSString stringWithFormat:@"%.0f℃",[returnedWeatherData temperatureInUnitFormat:kTemperatureCelcius]];
+        
+        NSLog(@"%@",temperaturestr);
+        
+        //お天気を書き込んだUIImageを生成
+        weatherImage = [self addText:weatherstr withFontName:@"KFhimajiFACE" fontSize:w/10 forImage:dateImage locetionIndex:1];
+        
+        //気温を書き込んだUIImageを生成
+        temperatureImage = [self addText:temperaturestr withFontName:@"KFhimajiFACE" fontSize:w/10
+                                forImage:weatherImage locetionIndex:2];
+        
+        // インジケーター停止
+        [aiView stopAnimating];
+        
+        //imageViewにimageをはめる
+        imageView.image = temperatureImage;
+
     }];
     
+   }
+
+-(IBAction)save{
     
-    //UIImageを生成(image)
-    UIImage *image =[UIImage imageNamed:@"ふなっしー.jpg"];
-    
-    //imageにdateStrを書き込んだUIImageを生成
-    UIImage *dst = [self addText:dateStr withFontName:@"Helvetica" fontSize:32 forImage:image locetionIndex:0];
-    
-    //tempにお天気を入れる(未)
-    NSString *temp = @"aaaa";
-    
-    //お天気を書き込んだUIImageを生成
-    UIImage *tempurature = [self addText:temp withFontName:@"Helvetica" fontSize:40 forImage:dst locetionIndex:1];
-    
-    //imageViewにimageをはめる
-    imageView.image = tempurature;
+    //画像をフォトアルバムに保存する
+    UIImageWriteToSavedPhotosAlbum(
+                                   temperatureImage,//保存する画像
+                                   self,//呼び出されるメソッドを持っているクラス
+                                   @selector(targetImage:didFinishSavingWithError:contentInfo:)
+                                   //呼び出されるメソッド
+                                   ,NULL);//メソッドに渡すもの
 }
+
+-(IBAction)filterImage{
+    
+    UIImage *inputImage = imageView.image;
+    
+// GPUImageのフォーマットにする
+GPUImagePicture *imagePicture = [[GPUImagePicture alloc] initWithImage:inputImage];
+
+// モノクロフィルター
+GPUImageMonochromeFilter *monoFilter = [[GPUImageMonochromeFilter alloc] init];
+    
+// モノクロフィルターのカラー設定
+[(GPUImageMonochromeFilter *)monoFilter setColor:(GPUVector4){0.3f, 0.3f, 0.3f, 0.2f}];
+    
+//sliderからフィルターの強度を取ってくる
+//[monoFilter setValue:[NSNumber numberWithFloat:slider.value] forKey:@"inputtensity"];
+    
+// イメージにモノクロフィルターを加える
+[imagePicture addTarget:monoFilter];
+
+// フィルター実行
+[imagePicture processImage];
+    
+// フィルターから画像を取得
+UIImage *outputImage = [monoFilter imageByFilteringImage:inputImage];
+
+// 画像を表示
+self->imageView.image = outputImage;
+    
+
+
+}
+
+//-(IBAction)valueChanged{
+//    //filterメソッドを呼び出す
+//    [self performSelector:@selector(filterImage) withObject:nil];
+//}
+
+
+
+
 
 
 

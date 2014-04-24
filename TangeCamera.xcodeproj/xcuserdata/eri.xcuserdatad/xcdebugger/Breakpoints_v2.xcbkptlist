@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TangeCamera/ViewController.m"
-            timestampString = "419306945.920889"
+            timestampString = "419997098.77485"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "221"
-            endingLineNumber = "221"
+            startingLineNumber = "250"
+            endingLineNumber = "250"
             landmarkName = "-targetImage:didFinishSavingWithError:contentInfo:"
             landmarkType = "5">
          </BreakpointContent>
